@@ -12,7 +12,7 @@ import net
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', type=str, default='Normal', choices=['Normal', 'Normal_BN', 'Softplus', 'Test'])
+    parser.add_argument('--mode', type=str, default='Tanh', choices=['Tanh', 'Tanh_BN', 'Softplus', 'Relu'])
     parser.add_argument('--n_unit', type=int, default=12)
     parser.add_argument('--n_depth', type=int, default=12)
     parser.add_argument('--cdim', type=int, default=1, choices=[1, 3])
@@ -48,9 +48,11 @@ def main():
     # img[:, :, 2] = img[:, :, 2] * 0
 
     if args.cdim == 1:
-        Image.fromarray(img[:, :, -1].astype(np.uint8)).save('result/result.png')
+        Image.fromarray(img[:, :, -1].astype(np.uint8)).save(
+            'result/{}_u{}_d{}_z{}_s{}.png'.format(args.mode, args.n_unit, args.n_depth, args.zdim, args.scale))
     elif args.cdim == 3:
-        Image.fromarray(img.astype(np.uint8), 'RGB').save('result/result.png')
+        Image.fromarray(img.astype(np.uint8), 'RGB').save(
+            'result/{}_u{}_d{}_z{}_s{}.png'.format(args.mode, args.n_unit, args.n_depth, args.zdim, args.scale))
 
 def round(x, y):
     return math.sqrt(x**2 + y**2)

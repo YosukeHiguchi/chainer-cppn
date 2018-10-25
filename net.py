@@ -26,16 +26,16 @@ class Generator(chainer.Chain):
             self.bn_out = L.BatchNormalization(cdim)
 
     def __call__(self, x):
-        if self.mode == 'Normal':
-            return self.Normal(x)
-        elif self.mode == 'Normal_BN':
-            return self.Normal_BN(x)
+        if self.mode == 'Tanh':
+            return self.Tanh(x)
+        elif self.mode == 'Tanh_BN':
+            return self.Tanh_BN(x)
         elif self.mode == 'Softplus':
             return self.Softplus(x)
-        elif self.mode == 'Test':
-            return self.Test(x)
+        elif self.mode == 'Relu':
+            return self.Relu(x)
 
-    def Normal(self, x):
+    def Tanh(self, x):
         x = F.tanh(self.fc_in(x))
         for fc_h in self.fc_h:
             x = F.tanh(fc_h(x))
@@ -43,7 +43,7 @@ class Generator(chainer.Chain):
 
         return y
 
-    def Normal_BN(self, x):
+    def Tanh_BN(self, x):
         x = F.tanh(self.bn_in(self.fc_in(x)))
         for bn_h, fc_h in zip(self.bn_h, self.fc_h):
             x = F.tanh(bn_h(fc_h(x)))
@@ -63,7 +63,7 @@ class Generator(chainer.Chain):
         y = F.sigmoid(self.fc_out(x))
         return y
 
-    def Test(self, x):
+    def Relu(self, x):
         x = F.relu(self.fc_in(x))
         for fc_h in self.fc_h:
             x = F.tanh(fc_h(x))
