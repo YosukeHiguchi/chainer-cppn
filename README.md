@@ -1,4 +1,6 @@
 # chainer-cppn
+http://blog.otoro.net/2016/03/25/generating-abstract-patterns-with-tensorflow/
+
 ## Tanh
 ![tanh](https://user-images.githubusercontent.com/22671032/47487756-fbb11c00-d87d-11e8-9018-a5d8477d93b8.png)
 
