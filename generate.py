@@ -60,7 +60,7 @@ def func(name):
         'round': lambda x, y: math.sqrt(x**2 + y**2),
         'heart': lambda x, y: x**2 + (y - (x**2)**(1 / 3))**2,
         'ellipse': lambda x, y, a=10, b=3: math.sqrt(x**2 * a + y**2 * b),
-        'sin': lambda x, y: math.sin((x + y) * mat.pi)
+        'sin': lambda x, y: math.sin((x + y) * math.pi)
     }
 
     return func_dict[name]
