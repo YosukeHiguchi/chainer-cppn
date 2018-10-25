@@ -13,6 +13,7 @@ import net
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--mode', type=str, default='Tanh', choices=['Tanh', 'Tanh_BN', 'Softplus', 'Relu'])
+    parser.add_argument('--func', type=str, default='round', choices=['round', 'heart', 'ellipse', 'sin'])
     parser.add_argument('--n_unit', type=int, default=12)
     parser.add_argument('--n_depth', type=int, default=12)
     parser.add_argument('--cdim', type=int, default=1, choices=[1, 3])
@@ -35,7 +36,7 @@ def main():
             for i in range(0, args.im_size, batchsize):
                 batch = np.empty((0, 3 + args.zdim), dtype=np.float32)
                 for x in x_range[i: min(i + batchsize, args.im_size)]:
-                    vec = np.array([x, y, round(x, y)], dtype=np.float32).reshape(1, 3)
+                    vec = np.array([x, y, func(args.func)(x, y)], dtype=np.float32).reshape(1, 3)
                     batch = np.append(batch, np.append(vec, z, axis=1), axis=0)
                 out = gen(batch)
                 px = np.r_[px, out.data]
@@ -54,14 +55,15 @@ def main():
         Image.fromarray(img.astype(np.uint8), 'RGB').save(
             'result/{}_u{}_d{}_z{}_s{}.png'.format(args.mode, args.n_unit, args.n_depth, args.zdim, args.scale))
 
-def round(x, y):
-    return math.sqrt(x**2 + y**2)
+def func(name):
+    func_dict = {
+        'round': lambda x, y: math.sqrt(x**2 + y**2),
+        'heart': lambda x, y: x**2 + (y - (x**2)**(1 / 3))**2,
+        'ellipse': lambda x, y, a=10, b=3: math.sqrt(x**2 * a + y**2 * b),
+        'sin': lambda x, y: math.sin((x + y) * mat.pi)
+    }
 
-def heart(x, y):
-    return x**2 + (y - (x**2)**(1 / 3))**2
-
-def ellipse(x, y, a=10, b=3):
-    return math.sqrt(x**2 * a + y**2 * b)
+    return func_dict[name]
 
 if __name__ == '__main__':
     # This enables a ctr-C without triggering errors
